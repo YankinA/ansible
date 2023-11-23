@@ -7,3 +7,19 @@
         state: present
         update_cache: yes
       become: yes
+      tags: [git]
+
+    - name: install nodejs
+      ansible.builtin.apt:
+        name: nodejs
+        state: present
+        update_cache: yes
+      become: yes
+      tags: [nodejs]
+
+    - name: add user tirion
+      ansible.builtin.user:
+        name: tirion
+        comment: Tirion Lannister
+      become: yes
+      tags: [users]
