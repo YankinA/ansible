@@ -7,3 +7,6 @@ install:
 nginx-proxy: 
 	ansible-playbook playbook.yml -i inventory.ini -t nginx -u ${user}
 
+nginx-update-conf:
+	ansible-playbook playbook.yml -i inventory.ini -u ${user} -t nginx --skip-tags install
+

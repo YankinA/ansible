@@ -4,7 +4,7 @@
     nginx_dir: templates/nginx
     nginx_port: 8081
 
-
+  gather_facts: no
   tasks: 
     - name: install git
       ansible.builtin.apt:
@@ -47,8 +47,8 @@
       tags: [nginx]
 
     - name: copy nginx index.html
-      ansible.builtin.copy:
-        src: "{{ nginx_dir }}/index.html"
+      ansible.builtin.template:
+        src: "{{ nginx_dir }}/index.html.j2"
         dest: /usr/share/nginx/html/index.html
       notify:
           - restart nginx
