@@ -1,1 +1,6 @@
 server_name: webserver1
+users:
+      - jaime
+      - sansa
+      - robert
+      - tirion

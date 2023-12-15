@@ -2,9 +2,11 @@
   
   vars:
     nginx_dir: templates/nginx
+    git_dir: templates/git
+    ssh_dir: templates/ssh
     nginx_port: 8081
 
-  gather_facts: no
+  gather_facts: yes 
   tasks: 
     - name: install git
       ansible.builtin.apt:
@@ -12,7 +14,8 @@
         state: present
         update_cache: yes
       become: yes
-      tags: [git, install]
+      when: ansible_distribution == 'Ubuntu'
+      tags: [git, install, ubuntu]
 
     - name: install nodejs
       ansible.builtin.apt:
@@ -22,12 +25,38 @@
       become: yes
       tags: [nodejs, install]
 
-    - name: add user tirion
+    - name: add users 
       ansible.builtin.user:
-        name: tirion
-        comment: Tirion Lannister
+        name: "{{ item }}" 
+      loop: "{{ users }}"
       become: yes
       tags: [users]
+   
+    - name: copy git config for all users
+      ansible.builtin.template:
+        src: "{{ git_dir }}/git.conf.j2"
+        dest: "/home/{{ user }}/.gitconfig"
+      become: yes
+      loop: "{{ users }}"
+      loop_control:
+        loop_var: user
+      tags: [users, git]
+
+    - name: create .ssh dir
+      ansible.builtin.file:
+        path: "/home/{{ item }}/.ssh"
+        state: directory
+      become: yes
+      loop: "{{ users }}"
+      tags: [users, dir]
+
+    - name: copy ssh keys for all users
+      ansible.builtin.template:
+        src: "{{ ssh_dir }}/ssh_key.j2"
+        dest: "/home/{{ item }}/.ssh/authorized_keys"
+      become: yes
+      loop: "{{ users }}"
+      tags: [users, ssh]
 
     - name: install nginx
       ansible.builtin.apt:

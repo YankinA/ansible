@@ -10,3 +10,8 @@ nginx-proxy:
 nginx-update-conf:
 	ansible-playbook playbook.yml -i inventory.ini -u ${user} -t nginx --skip-tags install
 
+users:
+	ansible-playbook playbook.yml -i inventory.ini -t users -u ${user}
+
+ubuntu:
+	ansible-playbook playbook.yml -i inventory.ini -t ubuntu -u ${user}
