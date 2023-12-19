@@ -1,17 +1,23 @@
 ping:
-	ansible all -i inventory.ini -u ${user} -m ping
+	ansible all -i inventory.ini -u ${u} -m ping
+
+all:
+	ansible-playbook playbook.yml -i inventory.ini -u ${u}
 
 install:
-	ansible-playbook playbook.yml -i inventory.ini -t install -u ${user}
+	ansible-playbook playbook.yml -i inventory.ini -t install -u ${u}
 
 nginx-proxy: 
-	ansible-playbook playbook.yml -i inventory.ini -t nginx -u ${user}
+	ansible-playbook playbook.yml -i inventory.ini -t nginx -u ${u}
 
 nginx-update-conf:
-	ansible-playbook playbook.yml -i inventory.ini -u ${user} -t nginx --skip-tags install
+	ansible-playbook playbook.yml -i inventory.ini -u ${u} -t nginx --skip-tags install
 
 users:
-	ansible-playbook playbook.yml -i inventory.ini -t users -u ${user}
+	ansible-playbook playbook.yml -i inventory.ini -t users -u ${u}
 
 ubuntu:
-	ansible-playbook playbook.yml -i inventory.ini -t ubuntu -u ${user}
+	ansible-playbook playbook.yml -i inventory.ini -t ubuntu -u ${u}
+
+cowsay:
+	ansible-playbook playbook.yml -i inventory.ini -t cowsay -u ${u}
