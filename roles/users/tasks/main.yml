@@ -1,0 +1,25 @@
+---
+- name: add users
+  ansible.builtin.user:
+    name: "{{ item }}"
+  loop: "{{ users }}"
+  become: yes
+  tags: [users]
+
+- name: copy git config for all users
+  ansible.builtin.template:
+    src: git.conf.j2
+    dest: "/home/{{ user }}/.gitconfig"
+  become: yes
+  loop: "{{ users }}"
+  loop_control:
+    loop_var: user
+  tags: [users, git]
+
+- name: create .ssh dir
+  ansible.builtin.file:
+    path: "/home/{{ item }}/.ssh"
+    state: directory
+  become: yes
+  loop: "{{ users }}"
+  tags: [users, dir]

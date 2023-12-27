@@ -1,116 +1,57 @@
 - hosts: webservers
 
   roles:
-  - role: geerlingguy.nodejs
-  - role: geerlingguy.git
-  - role: geerlingguy.postgresql
+    - role: geerlingguy.postgresql
+      become: yes
+
+    - role: geerlingguy.git
+      become: yes
+
+    # - role: geerlingguy.nodejs
+    #   become: yes
+    #   tags: [nodejs]
+
+    - users
+    - nginx
 
   vars:
     nginx_dir: templates/nginx
-    git_dir: templates/git
-    ssh_dir: templates/ssh
     nginx_port: 8081
 
   gather_facts: yes
+
   tasks:
-  - name: install git
-    ansible.builtin.apt:
-      name: git
-      state: present
-      update_cache: yes
-    become: yes
-    when: ansible_distribution == 'Ubuntu'
-    tags: [git, install, ubuntu]
+    - name: install git
+      ansible.builtin.apt:
+        name: git
+        state: present
+        update_cache: yes
+      become: yes
+      when: ansible_distribution == 'Ubuntu'
+      tags: [git, install, ubuntu]
 
-  - name: install nodejs
-    ansible.builtin.apt:
-      name: nodejs
-      state: present
-      update_cache: yes
-    become: yes
-    tags: [nodejs, install]
+    - name: install nodejs
+      ansible.builtin.apt:
+        name: nodejs
+        state: present
+        update_cache: yes
+      become: yes
+      tags: [nodejs, install]
 
-  - name: install cowsay
-    ansible.builtin.apt:
-      name: cowsay
-      state: present
-      update_cache: yes
-    become: yes
-    tags: [cowsay, install]
+    - name: install cowsay
+      ansible.builtin.apt:
+        name: cowsay
+        state: present
+        update_cache: yes
+      become: yes
+      tags: [cowsay, install]
 
-  - name: register cowsay_server_name
-    ansible.builtin.shell: cowsay "This is server {{ ansible_hostname | upper }}"
-    register: cowsay_server_name
-    tags: [cowsay, register]
+    - name: register cowsay_server_name
+      ansible.builtin.shell: cowsay "This is server {{ ansible_hostname | upper }}"
+      register: cowsay_server_name
+      tags: [cowsay, register]
 
-  - name: print cowsay_server_name variable
-    ansible.builtin.debug:
-      var: cowsay_server_name.stdout
-    tags: [cowsay, register]
-
-  - name: add users
-    ansible.builtin.user:
-      name: "{{ item }}"
-    loop: "{{ users }}"
-    become: yes
-    tags: [users]
-
-  - name: copy git config for all users
-    ansible.builtin.template:
-      src: "{{ git_dir }}/git.conf.j2"
-      dest: "/home/{{ user }}/.gitconfig"
-    become: yes
-    loop: "{{ users }}"
-    loop_control:
-      loop_var: user
-    tags: [users, git]
-
-  - name: create .ssh dir
-    ansible.builtin.file:
-      path: "/home/{{ item }}/.ssh"
-      state: directory
-    become: yes
-    loop: "{{ users }}"
-    tags: [users, dir]
-
-  - name: copy ssh keys for all users
-    ansible.builtin.template:
-      src: "{{ ssh_dir }}/ssh_key.j2"
-      dest: "/home/{{ item }}/.ssh/authorized_keys"
-    become: yes
-    loop: "{{ users }}"
-    tags: [users, ssh]
-
-  - name: install nginx
-    ansible.builtin.apt:
-      name: nginx
-      state: present
-      update_cache: yes
-    become: yes
-    tags: [nginx, install]
-
-  - name: copy nginx config
-    ansible.builtin.template:
-      src: "{{ nginx_dir }}/nginx.conf.j2"
-      dest: /etc/nginx/nginx.conf
-    notify:
-    - restart nginx
-    become: yes
-    tags: [nginx]
-
-  - name: copy nginx index.html
-    ansible.builtin.template:
-      src: "{{ nginx_dir }}/index.html.j2"
-      dest: /usr/share/nginx/html/index.html
-    notify:
-    - restart nginx
-    become: yes
-    when: cowsay_server_name is defined
-    tags: [nginx]
-
-  handlers:
-  - name: restart nginx
-    ansible.builtin.service:
-      name: nginx
-      state: reloaded
-    become: yes
+    - name: print cowsay_server_name variable
+      ansible.builtin.debug:
+        var: cowsay_server_name.stdout
+      tags: [cowsay, register]
