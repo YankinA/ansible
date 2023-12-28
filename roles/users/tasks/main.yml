@@ -22,4 +22,13 @@
     state: directory
   become: yes
   loop: "{{ users }}"
-  tags: [users, dir]
+  tags: [users, dir, ssh]
+
+- name: set authorized key for user
+  ansible.posix.authorized_key:
+    user: "{{ item }}"
+    state: present
+    key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+  become: yes
+  loop: "{{ users }}"
+  tags: [users, ssh]

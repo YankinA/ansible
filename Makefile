@@ -16,6 +16,9 @@ nginx-update-conf:
 users:
 	ansible-playbook playbook.yml -i inventory.ini -t users -u ${u}
 
+ssh:
+	ansible-playbook playbook.yml -i inventory.ini -t ssh -u ${u}
+
 ubuntu:
 	ansible-playbook playbook.yml -i inventory.ini -t ubuntu -u ${u}
 
