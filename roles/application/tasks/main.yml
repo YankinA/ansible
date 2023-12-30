@@ -1,0 +1,65 @@
+---
+# - name: create application folder
+#   ansible.builtin.file:
+#     path: "{{ application_folder }}"
+#     state: directory
+#   become: yes
+#   tags: [deploy-app, dir]
+
+# - name: clone git repository
+#   ansible.builtin.git:
+#     repo: "{{ application_repo }}"
+#     dest: "{{ application_folder }}"
+#   become: yes
+#   tags: [deploy-app, git]
+
+# - name: install nodejs
+#   ansible.builtin.apt:
+#     name: nodejs
+#     state: present
+#     update_cache: yes
+#   become: yes
+#   tags: [deploy-app, install-nodejs]
+
+# - name: install npm
+#   ansible.builtin.apt:
+#     name: npm
+#     state: present
+#     update_cache: yes
+#   become: yes
+#   tags: [deploy-app, install-npm]
+
+# - name: install make
+#   ansible.builtin.apt:
+#     name: make
+#     state: present
+#     update_cache: yes
+#   become: yes
+#   tags: [deploy-app, install-make]
+
+# - name: install app dependencies
+#   ansible.builtin.shell: make install
+#   become: yes
+#   tags: [deploy-app, install-deps]
+
+# - name: setup application
+#   ansible.builtin.shell: make setup
+#   become: yes
+#   tags: [deploy-app, setup-app]
+
+# - name: run application
+#   ansible.builtin.shell: make start
+#   become: yes
+#   tags: [deploy-app, run-app]
+
+- name: run application container
+  docker_container:
+    name: cranky_liskov
+    image: hexletcomponents/devops-example-app
+    state: started
+    ports:
+      - 3000:3000
+    env:
+      SERVER_MESSAGE: Hexlet Awesome Server
+  become: yes
+  tags: [deploy-app, run-container]

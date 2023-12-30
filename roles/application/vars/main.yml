@@ -1,0 +1,3 @@
+application_folder: /var/www/app
+
+application_repo: https://github.com/hexlet-components/devops-example-app.git

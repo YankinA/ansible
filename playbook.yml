@@ -13,6 +13,7 @@
 
     - users
     - nginx
+    - application
 
   vars:
     nginx_dir: templates/nginx

@@ -29,4 +29,7 @@ cowsay-nginx-conf:
 	ansible-playbook playbook.yml -i inventory.ini -t cowsay -t nginx -u ${u}
 
 install-roles:
-	ansible-galaxy install -r requirements.yml		
+	ansible-galaxy install -r requirements.yml
+
+deploy:
+	ansible-playbook playbook.yml -i inventory.ini -t deploy-app -u ${u}
